@@ -1,1 +1,62 @@
-Hello
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js">
+    </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Wonders of Space | Creative Project 2</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Photos From the Red Planet</h2>
+        <div class="form-group">
+            <label for="rover">Select a Rover</label>
+            <select class="form-control" id="rover">
+          <option value="curiosity">Curiosity</option>
+          <option value="opportunity">Opportunity</option>
+          <option value="spirit">Spirit</option>
+    </select>
+            <h5>A Sol is a day on Mars. Please select which Sol you'd like pictures from.</h5>
+            <input type="number" id="sol" placeholder="65" step="1" />
+            <button id="submission" type="button" class="btn btn-primary">Submit</button>
+        </div>
+        <div id="img_dump">
+
+        </div>
+    </div>
+    <script>
+        $('#submission').click(function() {
+            var rover = $('#rover :selected').val();
+            var sol = $('#sol').val();
+            if (sol == "") {
+                alert("Please enter a sol");
+                return;
+            }
+            var api_key = 'lEed9OhBMqqMvtowNCinteIm9J1zHtzjgH78t5AQ';
+            var myurl = "https://api.nasa.gov/mars-photos/api/v1/rovers/" + rover + "/photos?sol=" + sol + "&api_key=" + api_key;
+            $.ajax({
+                url: myurl,
+                dataType: "json",
+                success: function(data) {
+                    console.log(data);
+                    var num = Math.floor((Math.random() * data.photos.length) + 1);
+                    var everything;
+                    if (data.photos.length == 0) {
+                        everything = "<h3>That Sol is outside of the range of this rover. Please choose another.</h3>";
+                    }
+                    else {
+                        everything = "<img src=" + data.photos[num].img_src + " alt=\"Space Image\">";
+                        everything += "<br>";
+                        everything += "<h5>" + data.photos[num].earth_date + "</h5>";
+                        everything += "<h6>" + data.photos[num].camera.full_name + "</h6>";
+                    }
+                    $("#img_dump").html(everything);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
